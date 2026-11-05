@@ -1,0 +1,8 @@
+ns-3.49/build/
+ns-3.49/cmake-cache/
+ns-3.49/.lock-ns3_*
+.vs/
+__pycache__/
+*.pcap
+*.tr
+*.db
