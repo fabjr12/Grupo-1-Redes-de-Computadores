@@ -1,0 +1,3 @@
+mobilidade,protocolo,trafego,nClientes,seed,run,grupo,fluxos,vazao_total_mbps,vazao_media_cliente_kbps,atraso_medio_ms,jitter_medio_ms,perda_pct,tx_pacotes,rx_pacotes
+estatico,udp,cbr,1,1,1,total,1,0.539926,539.925517,0.197547,0.005120,0.000000,7249,7249
+estatico,udp,cbr,1,1,1,udp,1,0.539926,539.925517,0.197547,0.005120,0.000000,7249,7249
