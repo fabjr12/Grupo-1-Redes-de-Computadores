@@ -11,9 +11,28 @@ rm -f "$CSV"
 
 for mob in 0 1; do
     for proto in udp tcp misto; do
-        for n in 1 2 4 8 16 32; do
-            for run in $(seq 1 "$RODADAS"); do
-                ./ns3 run --no-build "equipe_1_3q2026 --nClientes=$n --mobilidade=$mob --protocolo=$proto --run=$run --csv=$CSV"
+        for trafego in cbr rajada misto; do
+            for n in 1 2 4 6; do
+                for pot in 16 20 23 26; do
+                    for run in $(seq 1 "$RODADAS"); do
+                        ./ns3 run --no-build \
+                        "equipe_1_3q2026 \
+                        --tempo=60 \
+                        --nClientes=$n \
+                        --tamanho=140 \
+                        --potenciaTx=26 \
+                        --velMin=3.6 \
+                        --velMax=7.2 \
+                        --taxa=512kbps \
+                        --tamUdp=512 \
+                        --tamTcp=1500 \
+                        --mobilidade=$mob \
+                        --protocolo=$proto \
+                        --trafego=$trafego \
+                        --run=$run \
+                        --csv=$CSV"
+                    done
+                done
             done
         done
     done

@@ -401,6 +401,13 @@ main(int argc, char* argv[])
     Simulator::Stop(Seconds(tempoSimulacao + 1.0));
     Simulator::Run();
 
+    for (uint32_t i = 0; i < nClientes; ++i)
+{
+    auto d = clientes.Get(i)->GetObject<MobilityModel>()
+                 ->GetDistanceFrom(apNo.Get(0)->GetObject<MobilityModel>());
+    std::cout << "c" << i << " dist AP = " << d << " m" << std::endl;
+}
+
     monitor->CheckForLostPackets();
     Ptr<Ipv4FlowClassifier> classificador =
         DynamicCast<Ipv4FlowClassifier>(fmHelper.GetClassifier());
