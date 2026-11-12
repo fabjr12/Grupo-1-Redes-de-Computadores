@@ -401,6 +401,13 @@ main(int argc, char* argv[])
     Simulator::Stop(Seconds(tempoSimulacao + 1.0));
     Simulator::Run();
 
+    for (uint32_t i = 0; i < nClientes; ++i)
+{
+    auto d = clientes.Get(i)->GetObject<MobilityModel>()
+                 ->GetDistanceFrom(apNo.Get(0)->GetObject<MobilityModel>());
+    std::cout << "c" << i << " dist AP = " << d << " m" << std::endl;
+}
+
     monitor->CheckForLostPackets();
     Ptr<Ipv4FlowClassifier> classificador =
         DynamicCast<Ipv4FlowClassifier>(fmHelper.GetClassifier());
@@ -472,14 +479,19 @@ main(int argc, char* argv[])
         {
             if (novoArquivo)
             {
-                csv << "mobilidade,protocolo,trafego,nClientes,seed,run,grupo,fluxos,"
-                       "vazao_total_mbps,vazao_media_cliente_kbps,atraso_medio_ms,"
-                       "jitter_medio_ms,perda_pct,tx_pacotes,rx_pacotes\n";
+                csv << "mobilidade,protocolo,trafego,nClientes,potenciaTx,seed,run,grupo,fluxos,"
+                    "vazao_total_mbps,vazao_media_cliente_kbps,atraso_medio_ms,"
+                    "jitter_medio_ms,perda_pct,tx_pacotes,rx_pacotes\n";
             }
             csv << std::fixed << std::setprecision(6);
+
+            // potenciaTx sem casas decimais desnecessarias (16 em vez de 16.000000)
+            std::ostringstream potStr;
+            potStr << potenciaTx;
+
             auto escrever = [&](const std::string& grupo, const Metricas& m) {
                 csv << rotuloMob << "," << protocolo << "," << trafego << "," << nClientes << ","
-                    << seed << "," << run << "," << grupo << "," << m.fluxos << ","
+                    << potStr.str() << "," << seed << "," << run << "," << grupo << "," << m.fluxos << ","
                     << m.VazaoMbps(duracaoTrafego) << ","
                     << (m.fluxos ? m.VazaoMbps(duracaoTrafego) * 1e3 / m.fluxos : 0.0) << ","
                     << m.AtrasoMs() << "," << m.JitterMs() << "," << m.PerdaPct() << ","
