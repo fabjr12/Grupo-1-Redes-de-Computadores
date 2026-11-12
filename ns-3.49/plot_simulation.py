@@ -26,12 +26,6 @@ from matplotlib.lines import Line2D
 CSV = sys.argv[1] if len(sys.argv) > 1 else "equipe_1_resultados.csv"
 OUT = Path("graficos")
 
-# O CSV NÃO tem coluna de potência. Cada configuração da varredura (cbr, n>=2)
-# aparece com 5 níveis, na ordem crescente de potência (ordem alfabética dos
-# arquivos temporários gerados pelo script paralelo). Configurações com uma
-# única linha (n=1, rajada, misto) foram rodadas só na potência de referência
-# (a última da lista).
-POTENCIAS_DBM = [16, 18, 20, 22, 26]
 POT_REF = 26          # dBm usado nos gráficos 1, 2, 3 e 6
 
 # Gráfico 4 (perda por tipo de tráfego): rajada e misto só existem em POT_REF,
@@ -66,17 +60,10 @@ def carregar(path):
     # O CSV repete linhas (grupo 'total' e grupo do protocolo, mais duplicatas).
     # Fica só o agregado de toda a rede.
     t = d[d["grupo"] == "total"].drop_duplicates().copy()
-    chave = ["mobilidade", "protocolo", "trafego", "nClientes"]
-    t["ordem"] = t.groupby(chave).cumcount()
-    t["tam"] = t.groupby(chave)["ordem"].transform("max") + 1
-    npot = len(POTENCIAS_DBM)
-    ruim = t[~t["tam"].isin([1, npot])]
-    if len(ruim):
-        sys.exit(f"Configurações com nº de linhas inesperado:\n{ruim[chave + ['tam']].drop_duplicates()}")
-    # 5 linhas: potências em ordem crescente. 1 linha: só POT_REF.
-    t["pot_dbm"] = np.where(t["tam"] == 1, POTENCIAS_DBM[-1], t["ordem"].map(dict(enumerate(POTENCIAS_DBM))))
-    t["pot_dbm"] = t["pot_dbm"].astype(int)
-    return t.drop(columns=["ordem", "tam"]).reset_index(drop=True)
+    if "potenciaTx" not in t.columns:
+        sys.exit("O CSV precisa conter a coluna 'potenciaTx'.")
+    t["pot_dbm"] = pd.to_numeric(t["potenciaTx"], errors="raise")
+    return t.reset_index(drop=True)
 
 
 def rot_pot(p):
