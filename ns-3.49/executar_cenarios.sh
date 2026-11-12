@@ -12,7 +12,7 @@ rm -f "$CSV"
 for mob in 0 1; do
     for proto in udp tcp misto; do
         for trafego in cbr rajada misto; do
-            for n in 1 2 4 6; do
+            for n in 1 2 4 16; do
                 for pot in 16 20 23 26; do
                     for run in $(seq 1 "$RODADAS"); do
                         ./ns3 run --no-build \
@@ -20,7 +20,7 @@ for mob in 0 1; do
                         --tempo=60 \
                         --nClientes=$n \
                         --tamanho=140 \
-                        --potenciaTx=26 \
+                        --potenciaTx=$pot \
                         --velMin=3.6 \
                         --velMax=7.2 \
                         --taxa=512kbps \
